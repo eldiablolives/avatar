@@ -1,0 +1,66 @@
+<html>
+<head>
+    <script src="avatar.js"></script>
+    <style>
+        body {
+            font-family: helvetica, arial, "lucida grande", verdana, "メイリオ", "ＭＳ Ｐゴシック", sans-serif;
+            font-size: 1.2em;
+        }
+
+        #window {
+            width: 400px;
+            height: 400px;
+            margin: auto;
+            border: 2px dashed grey;
+            overflow: hidden;
+        }
+
+        #avatar {
+            height: 200px;
+            width: 200px;
+            position: relative;
+            z-index: 1;
+            background-color: #eeeeee;
+            border: 100px solid rgba(255, 255, 255, 0.5);
+            cursor: move;
+        }
+
+        #blurb {
+            width: 400px;
+            margin: auto;
+        }
+
+        .component {
+            width: 100%;
+            margin: 5px;
+            height: 30px;
+            font-size: 18px;
+        }
+
+        .avatar-over {
+            border: 2px dashed green;
+        }
+    </style>
+</head>
+<body>
+<div id="blurb">
+    <h1>Avatar</h1>
+    <div id="window">
+        <div id="avatar">Drag & Drop your image here</div>
+    </div>
+
+    <br>
+    <input id="zoom" type="range" class="component" value="0" min="0" max="100" step="1">
+    <input type="text" placeholder="URL to upload file" class="component">
+    <button class="component">done</button>
+</div>
+
+<script>
+    var avatar = new Avatar('avatar', -100, -100);
+    document.getElementById('zoom').addEventListener('input', function(){
+        console.log('val: ' + this.value);
+        avatar.paint(null, 1+3/100*this.value);
+    })
+</script>
+</body>
+</html>
