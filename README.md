@@ -65,8 +65,32 @@ offset is the border size, the image shows under border
 constrain is the cropped image size, if you use a really large image then the crop will be really large, unless if you constrain it to a size, then we'll resize it to a more palatable (screen resolution) thats quick to transfer
 
 
+API
+===
+
+crop() - just crop it, and gimmie the dataURL
+
+crop(callback) - do the same as crop but call my callback method when finished. Callback signature: function (err, dataUrl)
+
+crop(url, callback) - same as crop(callback) only upload the resulting image to a server
+
+on(callback) - listen to all events, callback signature: function(eventName, data)
+
+on(eventName, callback) - same as on(callback) only fires when specific event is dispatched
+
 events
 ======
+
+imageAdded
+
+multipleImagesAdded - avatar will process only the first image but you'll get the notification
+
+cropped
+
+upload
+
+uploadEnd
+
 
 
 
