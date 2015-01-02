@@ -148,13 +148,24 @@ Avatar.prototype = {
             var xhr = new XMLHttpRequest();
             var fd = new FormData();
 
-            fd.append('file', imgdata);
+            var data = atob(imgdata.split(',')[1]);
+            var buff = new ArrayBuffer(data.length);
+            var bytes = new Uint8Array(buff);
+            for (var i = 0; i < data.length; i += 1) {
+                bytes[i] = data.charCodeAt(i);
+            }
+
+            fd.append('file', new Blob([bytes],{type: imgdata.split(':')[1].split(';')[0]}));
+
             xhr.addEventListener('load', function () {
+                console.log('done!!!!');
             });
-            xhr.addEventListener('error', function () {
+            xhr.addEventListener('error', function (err) {
+                console.log('ERROR');
             });
 
-            xhr.open('POST', url);
+            xhr.open('post', 'http://localhost:8081/upload/ogdZ0Omv27PLA8yA', false);
+            //xhr.setRequestHeader('Content-Type', 'multipart/form-data; boundary=avatar---' + Date.now());
             xhr.send(fd);
         }
 

@@ -110,7 +110,9 @@
     });
 
     document.getElementById('done').addEventListener('click', function () {
-        var data = avatar.crop();
+        var data = avatar.crop('http://localhost:8081:/upload', function(err,data){
+
+        });
         document.getElementById('img-preview').src = data;
     });
 </script>
