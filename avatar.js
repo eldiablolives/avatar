@@ -1,15 +1,14 @@
-function Avatar(elementId, offsetX, offsetY) {
+function Avatar(elementId, params) {
     var self = this;
+    self.params = params;
 
     self.av = document.getElementById(elementId);
+
+    var offsetX = params.offsetX || params.border * -1 || 0;
+    var offsetY = params.offsetY || params.border * -1 || 0;
+
     self.bgx = offsetX;
     self.bgy = offsetY;
-    var start;
-    //var aw, ah;
-
-    this.pw = null;
-    this.ph = null;
-
 
     self.av.addEventListener('dragenter', function (e) {
         self.av.classList.add('avatar-over');
@@ -20,6 +19,7 @@ function Avatar(elementId, offsetX, offsetY) {
     });
 
     self.av.addEventListener('dragover', function (e) {
+        self.av.classList.add('avatar-over');
         e.stopPropagation();
         e.preventDefault();
     });
@@ -28,10 +28,6 @@ function Avatar(elementId, offsetX, offsetY) {
         e.stopPropagation();
         e.preventDefault();
 
-        var container = self.av.parentNode;
-
-        //alert('parent: ' + container.offsetWidth + ' x ' + container.offsetHeight);
-        //
         var dt = e.dataTransfer;
         var files = dt.files;
 
@@ -45,16 +41,6 @@ function Avatar(elementId, offsetX, offsetY) {
                     var img = new Image();
                     img.src = e.target.result;
 
-                    var canvas = document.createElement('canvas');
-                    var ctx = canvas.getContext('2d');
-                    ctx.canvas.width = container.offsetWidth;
-                    ctx.canvas.height = container.offsetHeight;
-
-                    ctx.drawImage(img, 0, 0);
-
-                    //container.appendChild(canvas);
-                    //canvas.style.position = 'relative';
-                    //canvas.style.top = (av.offsetHeight * -1) + 'px';
                     self.av.style.backgroundImage = 'url(' + e.target.result + ')';
 
                     self.img = img;
@@ -95,24 +81,22 @@ function Avatar(elementId, offsetX, offsetY) {
                 diffy = (e.clientY - start.y);
             }
 
-            start.x += diffx;
-            start.y += diffy;
-
-            if(self.bgx >= offsetX && diffx > 0)
+            if (self.bgx >= offsetX && diffx > 0)
                 self.bgx = offsetX;
-            else if(self.bgx + self.pw + diffx <= self.aw + offsetX)
+            else if (self.bgx + self.pw + diffx <= self.aw + offsetX)
                 self.bgx = (self.pw - self.aw) * -1 + offsetX;
             else
                 self.bgx += diffx;
 
-            if(self.bgy >= offsetY && diffy > 0)
+            if (self.bgy >= offsetY && diffy > 0)
                 self.bgy = offsetY;
-            else if(self.bgy + self.ph + diffy <= self.ah + offsetY)
+            else if (self.bgy + self.ph + diffy <= self.ah + offsetY)
                 self.bgy = (self.ph - self.ah) * -1 + offsetY;
             else
                 self.bgy += diffy;
 
-            self.bgy += diffy;
+            start.x += diffx;
+            start.y += diffy;
 
             self.av.style.backgroundPosition = self.bgx + ' ' + self.bgy;
         }
@@ -120,38 +104,69 @@ function Avatar(elementId, offsetX, offsetY) {
 }
 
 Avatar.prototype = {
-    crop: function(url, callback) {
-        if(!callback) {
+    crop: function (url, callback) {
+        var self = this;
+        if (!callback) {
             callback = url;
             url = null;
         }
+
+        var canvas = document.createElement('canvas');
+
+        var bgx = self.bgx;
+        var bgy = self.bgy;
+
+        var offsetX = self.params.offsetX || self.params.border || 0;
+        var offsetY = self.params.offsetY || self.params.border || 0;
+        var offsetW = self.params.offsetW || self.params.border || 0;
+        var offsetH = self.params.offsetH || self.params.border || 0;
+
+        if(bgx < 0)
+            bgx = bgx *-1;
+        if(bgy < 0)
+            bgy = bgy *-1;
+
+        var sx = bgx * self.ratio;
+        var sy = bgy * self.ratio;
+        var sw = (self.aw - offsetW - offsetX) * self.ratio;
+        var sh = (self.ah - offsetH - offsetY) * self.ratio;
+
+        canvas.width = sw;
+        canvas.height = sh;
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(this.img, sx, sy, sw, sh, 0, 0, sw, sh );
+        return ctx.canvas.toDataURL('image/png');
+
     },
-    paint: function(img, zoom) {
-        if(!img)
-            img = this.img;
+    paint: function (img, zoom) {
         var self = this;
+        if (!img)
+            img = self.img;
+
+        if (zoom)
+            self.zoom = zoom;
+
         var h = img.height;
         var w = img.width;
         self.aw = self.av.offsetWidth;
         self.ah = self.av.offsetHeight;
         var imgor = w / h;
         var avor = self.aw / self.ah;
-        var ratio;
 
         if (imgor > avor)
-            ratio = h / self.ah;
+            self.ratio = h / self.ah;
         else
-            ratio = w / self.aw;
+            self.ratio = w / self.aw;
 
-        if(zoom)
-        ratio = ratio / zoom;
+        if (zoom)
+            self.ratio = self.ratio / zoom;
 
-        if (ratio >= 0) {
-            self.pw = w / ratio;
-            self.ph = h / ratio;
+        if (self.ratio >= 0) {
+            self.pw = w / self.ratio;
+            self.ph = h / self.ratio;
         } else {
-            self.pw = w * ratio;
-            self.ph = h * ratio;
+            self.pw = w * self.ratio;
+            self.ph = h * self.ratio;
         }
 
         self.av.style.backgroundSize = self.pw + 'px ' + self.ph + 'px';
