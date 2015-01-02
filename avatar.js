@@ -128,10 +128,10 @@ Avatar.prototype = {
         var offsetW = self.params.offsetW || self.params.border || 0;
         var offsetH = self.params.offsetH || self.params.border || 0;
 
-        if(bgx < 0)
-            bgx = bgx *-1;
-        if(bgy < 0)
-            bgy = bgy *-1;
+        if (bgx < 0)
+            bgx = bgx * -1;
+        if (bgy < 0)
+            bgy = bgy * -1;
 
         var sx = bgx * self.ratio;
         var sy = bgy * self.ratio;
@@ -141,8 +141,27 @@ Avatar.prototype = {
         canvas.width = sw;
         canvas.height = sh;
         var ctx = canvas.getContext('2d');
-        ctx.drawImage(this.img, sx, sy, sw, sh, 0, 0, sw, sh );
-        return ctx.canvas.toDataURL('image/png');
+        ctx.drawImage(this.img, sx, sy, sw, sh, 0, 0, sw, sh);
+        var imgdata = ctx.canvas.toDataURL('image/png');
+
+        if (url) {
+            var xhr = new XMLHttpRequest();
+            var fd = new FormData();
+
+            fd.append('file', imgdata);
+            xhr.addEventListener('load', function () {
+            });
+            xhr.addEventListener('error', function () {
+            });
+
+            xhr.open('POST', url);
+            xhr.send(fd);
+        }
+
+        if(!url && callback)
+            callback(null, imgdata);
+
+        return imgdata;
 
     },
     paint: function (img, zoom) {
@@ -178,7 +197,7 @@ Avatar.prototype = {
             self.ph = h * self.ratio;
         }
 
-        if(zoom == 1) {
+        if (zoom == 1) {
             self.baseBgx = self.bgx;
             self.baseBgy = self.bgy;
         }
