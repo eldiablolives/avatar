@@ -165,7 +165,6 @@ Avatar.prototype = {
             });
 
             xhr.open('post', 'http://localhost:8081/upload/ogdZ0Omv27PLA8yA', false);
-            //xhr.setRequestHeader('Content-Type', 'multipart/form-data; boundary=avatar---' + Date.now());
             xhr.send(fd);
         }
 
