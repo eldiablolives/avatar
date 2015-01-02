@@ -4,11 +4,13 @@ function Avatar(elementId, params) {
 
     self.av = document.getElementById(elementId);
 
-    var offsetX = params.offsetX || params.border * -1 || 0;
-    var offsetY = params.offsetY || params.border * -1 || 0;
+    self.offsetX = params.offsetX || params.border * -1 || 0;
+    self.offsetY = params.offsetY || params.border * -1 || 0;
 
-    self.bgx = offsetX;
-    self.bgy = offsetY;
+    self.bgx = self.offsetX;
+    self.bgy = self.offsetY;
+    self.baseBgx = self.bgx;
+    self.baseBgy = self.bgy;
 
     self.av.addEventListener('dragenter', function (e) {
         self.av.classList.add('avatar-over');
@@ -81,22 +83,27 @@ function Avatar(elementId, params) {
                 diffy = (e.clientY - start.y);
             }
 
-            if (self.bgx >= offsetX && diffx > 0)
-                self.bgx = offsetX;
-            else if (self.bgx + self.pw + diffx <= self.aw + offsetX)
-                self.bgx = (self.pw - self.aw) * -1 + offsetX;
+            if (self.bgx >= self.offsetX && diffx > 0)
+                self.bgx = self.offsetX;
+            else if (self.bgx + self.pw + diffx <= self.aw + self.offsetX)
+                self.bgx = (self.pw - self.aw) * -1 + self.offsetX;
             else
                 self.bgx += diffx;
 
-            if (self.bgy >= offsetY && diffy > 0)
-                self.bgy = offsetY;
-            else if (self.bgy + self.ph + diffy <= self.ah + offsetY)
-                self.bgy = (self.ph - self.ah) * -1 + offsetY;
+            if (self.bgy >= self.offsetY && diffy > 0)
+                self.bgy = self.offsetY;
+            else if (self.bgy + self.ph + diffy <= self.ah + self.offsetY)
+                self.bgy = (self.ph - self.ah) * -1 + self.offsetY;
             else
                 self.bgy += diffy;
 
             start.x += diffx;
             start.y += diffy;
+
+            var zoom = self.zoom > 1 ? self.zoom : 1;
+
+            self.baseBgx = self.bgx / zoom;
+            self.baseBgy = self.bgy / zoom;
 
             self.av.style.backgroundPosition = self.bgx + ' ' + self.bgy;
         }
@@ -143,8 +150,10 @@ Avatar.prototype = {
         if (!img)
             img = self.img;
 
-        if (zoom)
-            self.zoom = zoom;
+        if (!zoom)
+            zoom = 1;
+
+        self.zoom = zoom;
 
         var h = img.height;
         var w = img.width;
@@ -168,6 +177,14 @@ Avatar.prototype = {
             self.pw = w * self.ratio;
             self.ph = h * self.ratio;
         }
+
+        if(zoom == 1) {
+            self.baseBgx = self.bgx;
+            self.baseBgy = self.bgy;
+        }
+
+        self.bgx = self.baseBgx * zoom;
+        self.bgy = self.baseBgy * zoom;
 
         self.av.style.backgroundSize = self.pw + 'px ' + self.ph + 'px';
         self.av.style.backgroundPosition = self.bgx + ' ' + self.bgy;
