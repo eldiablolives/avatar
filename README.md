@@ -1,30 +1,24 @@
 avatar
 ======
 
-simple library to crop avatar image on a client and pass it on to a server.
+Avatar is a simplistic (client side) no-dependencies HTML5 image cropping library inspired by twitter.
 
-I grew frustrated with cropping images and although there are many wonderful libraries out there, they just didn't cut it for me so I did my own.
+In English: Drag'n'drop an image onto a web page, do the resizing and cropping and it uploads the cropped image to a server of your choice, just like standard file upload, bypassing the need for storing the original image. It is pure javascript, doesn't rely on any libraries.
 
-What avatar does:
 
-* loads up a dropped image
-* resizses and crops it (inspired by twitter's avatar)
-* then uploads crop-only to a server, don't really care about a master image
+Caveat emptor
+=============
 
-how does it work?
+Avatar is bult on HTML5 technologies, it means it won't work in some older version of browsers. I don't have any intention to make Avatar backward compatible with older browsers because from my personal perspective that's a fool's errand and it goes against the principle of Avatar.
 
-have a look at the html code, I made it purposely sterile, boring and simple.
-
-questions?
-
-ask
+If you must support older versions of browsers, it is your responsibility to provide alternatives that support it. I know of a really good "gopher" library.
 
 Getting started
 ===============
 
 HTML:
 
-<div id="avatar"></div>
+&lt;div id="avatar">&lt;/div>
 
 Javascript:
 
@@ -36,31 +30,32 @@ Avatar(domElementId, properties)
 Properties
 ===========
 
-border: num
+border: numeric
+---------------
 
-or
+Expands into
 
-offsetX: num,
-offsetY: num,
-offsetW: num,
-offsetH: num
+offsetX: numeric,
+offsetY: numeric,
+offsetW: numeric,
+offsetH: numeric
 
 {border: 100} := { offsetX: 100, offsetY: 100, offsetW: 100, offsetH: 100 }
 
-constrain: num
+Border is a shortcut property for lazy people like me, when having equal offset size from each side.
 
-or
+This is important, if you mess it up, the image won't scale correctly.
 
-constrainHeight: num,
-constrainWidth: num
+
+constrain: numeric
+------------------
+
+Expands into
+
+constrainHeight: numeric,
+constrainWidth: numeric
 
 {constrain: 100} := { constrainHeight: 100, constrainWidth: 100 }
-
-
-what's all that?
-================
-
-offset is the border size, the image shows under border
 
 constrain is the cropped image size, if you use a really large image then the crop will be really large, unless if you constrain it to a size, then we'll resize it to a more palatable (screen resolution) thats quick to transfer
 
@@ -78,18 +73,19 @@ on(callback) - listen to all events, callback signature: function(eventName, dat
 
 on(eventName, callback) - same as on(callback) only fires when specific event is dispatched
 
+
 events
 ======
 
-imageAdded
+imageAdded - if you drag & drop multiple images, only the first will be considered, others discarded.
 
-multipleImagesAdded - avatar will process only the first image but you'll get the notification
+cropped - after image is cropped. This is an asynchronous way to get a synchronous response
 
-cropped
+upload - when upload starts
 
-upload
+uploaded - when images is uploaded
 
-uploadEnd
+error - if there is some sort of error
 
 
 
