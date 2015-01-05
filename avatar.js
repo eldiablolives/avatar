@@ -1,11 +1,14 @@
 function Avatar(elementId, params) {
     var self = this;
-    self.params = params;
+    if(!params)
+        params = {};
 
     self.av = document.getElementById(elementId);
 
     self.offsetX = params.offsetX || params.border * -1 || 0;
     self.offsetY = params.offsetY || params.border * -1 || 0;
+    self.offsetW = params.offsetW || params.border || 0;
+    self.offsetH = params.offsetH || params.border || 0;
 
     self.bgx = self.offsetX;
     self.bgy = self.offsetY;
@@ -123,10 +126,10 @@ Avatar.prototype = {
         var bgx = self.bgx;
         var bgy = self.bgy;
 
-        var offsetX = self.params.offsetX || self.params.border || 0;
-        var offsetY = self.params.offsetY || self.params.border || 0;
-        var offsetW = self.params.offsetW || self.params.border || 0;
-        var offsetH = self.params.offsetH || self.params.border || 0;
+        //var offsetX = self.params.offsetX || self.params.border || 0;
+        //var offsetY = self.params.offsetY || self.params.border || 0;
+        //var offsetW = self.params.offsetW || self.params.border || 0;
+        //var offsetH = self.params.offsetH || self.params.border || 0;
 
         if (bgx < 0)
             bgx = bgx * -1;
@@ -135,8 +138,8 @@ Avatar.prototype = {
 
         var sx = bgx * self.ratio;
         var sy = bgy * self.ratio;
-        var sw = (self.aw - offsetW - offsetX) * self.ratio;
-        var sh = (self.ah - offsetH - offsetY) * self.ratio;
+        var sw = (self.aw - self.offsetW - self.offsetX) * self.ratio;
+        var sh = (self.ah - self.offsetH - self.offsetY) * self.ratio;
 
         canvas.width = sw;
         canvas.height = sh;
