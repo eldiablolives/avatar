@@ -1,0 +1,24 @@
+{
+  "name": "avatar.js",
+  "main": "avatar.js",
+  "version": "0.0.1",
+  "homepage": "https://github.com/eldiablolives/avatar",
+  "authors": [
+    "el'diablo <eldiablolives@live.com>"
+  ],
+  "description": "HTML5, no deps javascript image cropping library",
+  "keywords": [
+    "crop",
+    "javascript",
+    "drag",
+    "drop"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
